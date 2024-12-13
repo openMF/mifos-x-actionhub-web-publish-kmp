@@ -1,0 +1,40 @@
+name: 'Publish KMP Web App To GitHub Pages'
+description: 'Publish the web application on GitHub Pages'
+author: 'Mifos Initiative'
+branding:
+  icon: 'package'
+  color: 'orange'
+
+inputs:
+  web_package_name:
+    description: 'Name of the Android project module'
+    required: true
+
+outputs:
+  page_url:
+    description: 'URL of the deployed web application'
+    value: ${{ steps.deployment.outputs.page_url }}
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: 17
+
+    - name: Build Web(JS) App
+      shell: bash
+      run: ./gradlew jsBrowserDistribution
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
+
+    - name: Upload static files as artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './${{ inputs.web_package_name }}/build/dist/js/productionExecutable/'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
