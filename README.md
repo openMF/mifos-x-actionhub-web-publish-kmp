@@ -17,7 +17,12 @@ This GitHub Action allows you to easily publish a Kotlin Multiplatform (KMP) Web
 
 ## Usage
 
-### Basic Configuration
+```yaml
+  - name: Publish KMP Web App To GitHub Pages
+    uses: openMF/KMP-web-publish-action@v1.0.0
+```
+
+### Detailed Configuration
 ```yaml
 name: Deploy Web App
 
@@ -37,7 +42,7 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Publish Web App
-        uses: openMF/kmp-web-publish-action@v1
+        uses: openMF/KMP-web-publish-action@v1.0.0
         with:
           web_package_name: 'your-web-module-name'
 ```
