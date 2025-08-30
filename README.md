@@ -19,7 +19,7 @@ This GitHub Action allows you to easily publish a Kotlin Multiplatform (KMP) Web
 
 ```yaml
   - name: Publish KMP Web App To GitHub Pages
-    uses: openMF/KMP-web-publish-action@v1.0.0
+    uses: openMF/mifos-x-actionhub-web-publish@v1.0.1
 ```
 
 ### Detailed Configuration
@@ -42,9 +42,10 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Publish Web App
-        uses: openMF/KMP-web-publish-action@v1.0.0
+        uses: openMF/mifos-x-actionhub-web-publish@v1.0.1
         with:
           web_package_name: 'your-web-module-name'
+          java-version: '21'
 ```
 
 ## Inputs
@@ -54,6 +55,12 @@ jobs:
 - **Required**: `true`
 - **Type**: `string`
 - **Example**: `'web'`, `'webApp'`
+
+### `java-version`
+- **Description**: Java version to use.
+- **Required**: `false`
+- **Type**: `string`
+- **Example**: `'17'`, `'21'`
 
 ## Outputs
 
