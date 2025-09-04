@@ -9,6 +9,10 @@ inputs:
   web_package_name:
     description: 'Name of the Web project module'
     required: true
+  java-version:
+    description: 'Java version to use (e.g., 17, 21).'
+    required: false
+    default: '17'
 
 outputs:
   page_url:
@@ -21,7 +25,7 @@ runs:
     - uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
-        java-version: 17
+        java-version: ${{ inputs.java-version }}
 
     # Cache Gradle dependencies and build outputs to speed up future builds
     - name: Cache Gradle and build outputs
