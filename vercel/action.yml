@@ -1,0 +1,63 @@
+# Sub-action: vercel — Deploy via Vercel CLI
+# Part of openMF/mifos-x-actionhub-web-publish-kmp@v2.0.0
+# Per epic GOAL.md D42: NEW sub-action subdir; root action.yml unchanged.
+name: 'Publish Web App (Vercel)'
+description: 'Deploy the built web bundle to Vercel via the Vercel CLI (production deploy).'
+
+inputs:
+  dist_dir:
+    description: 'Path to the built web bundle'
+    required: true
+  vercel_token:
+    description: 'Vercel personal access token (VERCEL_TOKEN)'
+    required: true
+  vercel_org_id:
+    description: 'Vercel org / team ID (VERCEL_ORG_ID)'
+    required: true
+  vercel_project_id:
+    description: 'Vercel project ID (VERCEL_PROJECT_ID)'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Verify dist dir exists
+      shell: bash
+      env:
+        DIST_DIR: ${{ inputs.dist_dir }}
+      run: |
+        if [ ! -d "$DIST_DIR" ]; then
+          echo "ERROR: dist_dir not found: $DIST_DIR" >&2
+          exit 1
+        fi
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Vercel CLI
+      shell: bash
+      run: npm install -g vercel@34
+
+    - name: Pull Vercel project config
+      shell: bash
+      env:
+        VERCEL_TOKEN: ${{ inputs.vercel_token }}
+        VERCEL_ORG_ID: ${{ inputs.vercel_org_id }}
+        VERCEL_PROJECT_ID: ${{ inputs.vercel_project_id }}
+      run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+    - name: Build (no-op pass-through — bundle already built upstream)
+      shell: bash
+      env:
+        VERCEL_TOKEN: ${{ inputs.vercel_token }}
+      run: vercel build --prod --token="$VERCEL_TOKEN"
+
+    - name: Deploy
+      shell: bash
+      env:
+        VERCEL_TOKEN: ${{ inputs.vercel_token }}
+        DIST_DIR: ${{ inputs.dist_dir }}
+      run: |
+        vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" --yes
