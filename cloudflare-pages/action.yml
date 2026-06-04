@@ -1,0 +1,44 @@
+# Sub-action: cloudflare-pages — Deploy via Wrangler
+# Part of openMF/mifos-x-actionhub-web-publish-kmp@v2.0.0
+# Per epic GOAL.md D42: NEW sub-action subdir; root action.yml unchanged.
+name: 'Publish Web App (Cloudflare Pages)'
+description: 'Deploy the built web bundle to Cloudflare Pages via Wrangler.'
+
+inputs:
+  dist_dir:
+    description: 'Path to the built web bundle (e.g. cmp-web/build/dist/wasmJs/productionExecutable)'
+    required: true
+  cloudflare_pages_api_token:
+    description: 'Cloudflare API token with Pages:Edit permission'
+    required: true
+  cloudflare_account_id:
+    description: 'Cloudflare account ID'
+    required: true
+  project_name:
+    description: 'Cloudflare Pages project name'
+    required: true
+  branch:
+    description: 'Deployment branch label (production-like deploys use "main")'
+    required: false
+    default: 'main'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Verify dist dir exists
+      shell: bash
+      env:
+        DIST_DIR: ${{ inputs.dist_dir }}
+      run: |
+        if [ ! -d "$DIST_DIR" ]; then
+          echo "ERROR: dist_dir not found: $DIST_DIR" >&2
+          exit 1
+        fi
+        echo "Dist dir contents: $(ls -1 "$DIST_DIR" | wc -l) entries."
+
+    - name: Deploy via Wrangler
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ inputs.cloudflare_pages_api_token }}
+        accountId: ${{ inputs.cloudflare_account_id }}
+        command: pages deploy ${{ inputs.dist_dir }} --project-name=${{ inputs.project_name }} --branch=${{ inputs.branch }}

@@ -1,0 +1,47 @@
+# Sub-action: netlify — Deploy via Netlify CLI
+# Part of openMF/mifos-x-actionhub-web-publish-kmp@v2.0.0
+# Per epic GOAL.md D42: NEW sub-action subdir; root action.yml unchanged.
+name: 'Publish Web App (Netlify)'
+description: 'Deploy the built web bundle to Netlify via the Netlify CLI (production deploy).'
+
+inputs:
+  dist_dir:
+    description: 'Path to the built web bundle'
+    required: true
+  netlify_auth_token:
+    description: 'Netlify personal access token (NETLIFY_AUTH_TOKEN)'
+    required: true
+  netlify_site_id:
+    description: 'Netlify site ID (NETLIFY_SITE_ID)'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Verify dist dir exists
+      shell: bash
+      env:
+        DIST_DIR: ${{ inputs.dist_dir }}
+      run: |
+        if [ ! -d "$DIST_DIR" ]; then
+          echo "ERROR: dist_dir not found: $DIST_DIR" >&2
+          exit 1
+        fi
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Netlify CLI
+      shell: bash
+      run: npm install -g netlify-cli@17
+
+    - name: Deploy
+      shell: bash
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ inputs.netlify_auth_token }}
+        NETLIFY_SITE_ID: ${{ inputs.netlify_site_id }}
+        DIST_DIR: ${{ inputs.dist_dir }}
+      run: |
+        netlify deploy --dir="$DIST_DIR" --prod --message "Release deploy $GITHUB_SHA"

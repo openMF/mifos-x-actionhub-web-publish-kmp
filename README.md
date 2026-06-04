@@ -1,90 +1,43 @@
-# Publish KMP Web App to GitHub Pages Action
+# mifos-x-actionhub-web-publish-kmp
 
-## Overview
-This GitHub Action allows you to easily publish a Kotlin Multiplatform (KMP) Web Application to GitHub Pages with minimal configuration.
+GitHub Actions composite actions for publishing Compose Multiplatform web apps (Kotlin/JS, Wasm). Maintained by [Mifos Initiative](https://github.com/openMF).
 
-## Features
-- Builds Kotlin/JS web application
-- Configures GitHub Pages
-- Uploads static files
-- Deploys to GitHub Pages
-- Provides deployment URL as output
+## Distribution targets
 
-## Prerequisites
-- Kotlin Multiplatform Project
-- Gradle build system
-- GitHub Pages enabled in repository settings
+| Target | Location | Tier | Since |
+|---|---|---|---|
+| GitHub Pages | Root `action.yml` | Tier-1 (default) | v1.0.0 |
+| **Cloudflare Pages** | [`cloudflare-pages/`](cloudflare-pages/) | Tier-2 | v2.0.0 |
+| **Netlify** | [`netlify/`](netlify/) | Tier-2 | v2.0.0 |
+| **Vercel** | [`vercel/`](vercel/) | Tier-2 | v2.0.0 |
 
 ## Usage
 
+### Tier-1: GitHub Pages (root action, unchanged from v1.x)
+
 ```yaml
-  - name: Publish KMP Web App To GitHub Pages
-    uses: openMF/mifos-x-actionhub-web-publish-kmp@v1.0.1
+- uses: openMF/mifos-x-actionhub-web-publish-kmp@v2.0.0
+  with:
+    web_package_name: cmp-web
 ```
 
-### Detailed Configuration
-```yaml
-name: Deploy Web App
+### Tier-2: pick one provider
 
-on:
-  push:
-    branches:
-      - main
+See each sub-action's `README.md`:
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
+- [`cloudflare-pages/README.md`](cloudflare-pages/README.md)
+- [`netlify/README.md`](netlify/README.md)
+- [`vercel/README.md`](vercel/README.md)
 
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Publish Web App
-        uses: openMF/mifos-x-actionhub-web-publish-kmp@v1.0.1
-        with:
-          web_package_name: 'your-web-module-name'
-          java-version: '21'
-```
+## Versioning
 
-## Inputs
+- `v1.x` — single Tier-1 target (GH Pages). Last release: `v1.0.6`.
+- `v2.0.0` — adds 3 Tier-2 sub-actions. Root action behavior preserved.
 
-### `web_package_name`
-- **Description**: Name of the web package/module in your Kotlin Multiplatform project
-- **Required**: `true`
-- **Type**: `string`
-- **Example**: `'web'`, `'webApp'`
+## Changelog
 
-### `java-version`
-- **Description**: Java version to use.
-- **Required**: `false`
-- **Type**: `string`
-- **Example**: `'17'`, `'21'`
+See [`CHANGELOG.md`](CHANGELOG.md).
 
-## Outputs
+## License
 
-### `page_url`
-- **Description**: URL of the deployed GitHub Pages site
-- **Type**: `string`
-- **Example**: `https://yourusername.github.io/repository-name/`
-
-## Permissions Required
-```yaml
-permissions:
-  pages: write      # Allows deployment to GitHub Pages
-  id-token: write   # Enables secure token-based deployment
-```
-
-## Troubleshooting
-- Ensure your Gradle build generates JS distribution in the expected path
-- Verify GitHub Pages is enabled in repository settings
-- Check Gradle build script for correct JS distribution task
-
-## Notes
-- Action uses `jsBrowserDistribution` Gradle task
-- Uploads files from `build/dist/js/productionExecutable/`
-- Supports single Kotlin Multiplatform Web module
-
-## Contributing
-Contributions and improvements are welcome! Please open an issue or submit a pull request.
+Apache 2.0.
