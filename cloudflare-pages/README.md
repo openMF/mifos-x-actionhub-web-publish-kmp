@@ -26,4 +26,4 @@ Composite sub-action wrapping `wrangler pages deploy`. Part of `openMF/mifos-x-a
 
 ## Runner
 
-`ubuntu-latest`.
+`ubuntu-26.04`.
