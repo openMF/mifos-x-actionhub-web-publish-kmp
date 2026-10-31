@@ -24,4 +24,4 @@ Composite sub-action wrapping `vercel deploy --prod`. Part of `openMF/mifos-x-ac
 
 ## Runner
 
-`ubuntu-latest`.
+`ubuntu-26.04`.

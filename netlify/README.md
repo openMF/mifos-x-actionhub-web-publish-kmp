@@ -22,4 +22,4 @@ Composite sub-action wrapping `netlify deploy --prod`. Part of `openMF/mifos-x-a
 
 ## Runner
 
-`ubuntu-latest`.
+`ubuntu-26.04`.
